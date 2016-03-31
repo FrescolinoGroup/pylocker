@@ -1,1 +1,1 @@
-This should describe the module very briefly (about one sentence). 
+Locker metaclasses to limit attribute changes for Python classes.

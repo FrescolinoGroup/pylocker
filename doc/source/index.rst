@@ -1,7 +1,7 @@
 pylocker
-===========
+========
 
-The developer of this module is too lazy to write an introduction. He brings shame and dishonor upon himself and, more importantly, the great C. Frescolino. Let it be known that he shall acquire beers for all frescolino developers to redeem his sins.
+This module can be used to limit changing member variables of class instances. Creation and / or modification of member variables is limited to within the ``__init__`` function. Different levels of access restriction are provided.
 
 Tutorial, Examples and Documentation
 ====================================
@@ -9,7 +9,6 @@ Tutorial, Examples and Documentation
     :maxdepth: 2
     
     tutorial.rst
-    examples.rst
     documentation.rst
 
 Indices and tables
@@ -17,4 +16,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-

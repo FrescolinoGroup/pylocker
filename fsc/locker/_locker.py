@@ -3,7 +3,7 @@
 #
 # Author:  Dominik Gresch <greschd@gmx.ch>
 # Date:    31.03.2016 19:23:33 CEST
-# File:    locker.py
+# File:    _locker.py
 
 import decorator
 
@@ -61,6 +61,11 @@ class LockerBase(type):
                     elif (self.attr_mod_ctrl == 'all' and key != 'attr_mod_ctrl') or (self.attr_mod_ctrl == 'const'):
                         raise AttributeError("'{0}' object is locked for modification.".format(type(self).__name__))
 
+                    # make sure attr_mod_ctrl cannot be set to an invalid state
+                    if key == 'attr_mod_ctrl':
+                        if val not in ['none', 'new', 'all', 'const']:
+                            raise ValueError('Invalid value for attr_mod_ctrl: {}'.format(val))
+
                 fct(self, key, val)
             return inner
 
@@ -111,7 +116,7 @@ ConstLocker = type('ConstLocker', (LockerBase,), dict(locker_type='all'))
 OpenLocker = type('OpenLocker', (LockerBase,), dict(locker_type='none'))
 Locker = type('Locker', (LockerBase,), dict(locker_type='new'))
 
-SuperConstLocker.__doc__ = """ """
-ConstLocker.__doc__ = """ """
-OpenLocker.__doc__ = """ """
-Locker.__doc__ = """ """
+SuperConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'const'``."""
+ConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'all'``."""
+OpenLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'none'``."""
+Locker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'new'``."""
