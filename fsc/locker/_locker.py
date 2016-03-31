@@ -5,10 +5,6 @@
 # Date:    31.03.2016 19:23:33 CEST
 # File:    locker.py
 
-"""
-Locker module
-"""
-
 import decorator
 
 __all__ = ['SuperConstLocker', 'ConstLocker', 'OpenLocker', 'Locker']
