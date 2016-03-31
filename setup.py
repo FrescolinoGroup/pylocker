@@ -31,6 +31,7 @@ setup(
     include_package_data=True,
     author='C. Frescolino',
     description=description,
+    install_requires=['decorator'],
     long_description=readme,
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
