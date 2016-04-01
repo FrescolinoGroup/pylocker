@@ -36,12 +36,12 @@ class LockerBase(type):
 
         def _decorate_get_impl(fct):
             def inner(self, key):
-                # for the attr_mod_ctrl key, the getattre behaviour should not change
+                # for the attr_mod_ctrl key, the getattr behaviour should not change
                 # when e.g. the user does some redirecting
                 if key == 'attr_mod_ctrl':
                     raise AttributeError
                 else:
-                    fct(self, key, val)
+                    fct(self, key)
             return inner
 
         # setattr
@@ -57,7 +57,7 @@ class LockerBase(type):
                 if hasattr(self, 'attr_mod_ctrl'):
                     assert(self.attr_mod_ctrl in ['none', 'new', 'all', 'const'])
                     if self.attr_mod_ctrl == 'new' and (not hasattr(self, key)):
-                        raise AttributeError
+                        raise AttributeError("Cannot create new '{0}' attributes.".format(type(self).__name__, key))
                     elif (self.attr_mod_ctrl == 'all' and key != 'attr_mod_ctrl') or (self.attr_mod_ctrl == 'const'):
                         raise AttributeError("'{0}' object is locked for modification.".format(type(self).__name__))
 
@@ -82,7 +82,7 @@ class LockerBase(type):
                 if hasattr(self, 'attr_mod_ctrl'):
                     assert(self.attr_mod_ctrl in ['none', 'new', 'all', 'const'])
                     if self.attr_mod_ctrl != 'none':
-                        raise AttributeError("'{0}' attributes cannot be deleted".format(type(self).__name__, key))
+                        raise AttributeError("'{0}' attributes cannot be deleted.".format(type(self).__name__, key))
 
                 fct(self, key)
             return inner
@@ -116,7 +116,10 @@ ConstLocker = type('ConstLocker', (LockerBase,), dict(locker_type='all'))
 OpenLocker = type('OpenLocker', (LockerBase,), dict(locker_type='none'))
 Locker = type('Locker', (LockerBase,), dict(locker_type='new'))
 
-SuperConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'const'``."""
-ConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'all'``."""
-OpenLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'none'``."""
-Locker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'new'``."""
+try:
+    SuperConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'const'``."""
+    ConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'all'``."""
+    OpenLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'none'``."""
+    Locker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'new'``."""
+except AttributeError:
+    pass
