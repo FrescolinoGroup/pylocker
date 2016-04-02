@@ -56,7 +56,7 @@ The :class:`ConstLocker` metaclass does not allow changing, deleting or creating
     del a.x # ok
     a.y = 3 # ok
 
-Finally, the :class:`ConstLocker` metaclass does not allow changing, deleting or creating new attributes. Moreover, ``attr_mod_ctrl`` cannot be changed.
+Finally, the :class:`SuperConstLocker` metaclass does not allow changing, deleting or creating new attributes. Moreover, ``attr_mod_ctrl`` cannot be changed.
 
 .. code:: python
 
