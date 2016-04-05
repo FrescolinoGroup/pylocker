@@ -1,9 +1,9 @@
 Tutorial
 ========
 
-In the following, we will create a simple class using the different Locker metaclasses to see how they affect which operations are permitted.
+In the following, we will create a simple class using the different Locker metaclasses to see how they affect the different operations.
 
-First, the :class:`OpenLocker` metaclass does not prohibit any operations on the instance attributes. That is, changing attributes, assigning new attributes or deleting attributes is permitted.
+First, the :class:`OpenLocker` metaclass does not prohibit any operations on the instance attributes. Changing attributes, assigning new attributes and/or deleting attributes is permitted.
 
 .. code:: python
 
