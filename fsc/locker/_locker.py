@@ -33,7 +33,7 @@ class LockerBase(type):
             """
             decorator for __getattr__
             """
-            return _decorator_set_impl(fct)(self, key, val)
+            return _decorator_get_impl(fct)(self, key, val)
 
         def _decorate_get_impl(fct):
             def inner(self, key):
@@ -127,6 +127,9 @@ except AttributeError:
 
 @contextmanager
 def change_lock(instance, set_to='none'):
+    """Context manager to set the lock type to one of ``'all'``, ``'new'`` or ``'none'``. This does not work for ``SuperConstLocker`` classes since their lock type cannot be changed, and the lock type cannot be changed to ``'const'`` because it could not be changed back."""
+    if not set_to in ['all', 'new', 'none']:
+        raise ValueError("invalid value '{}' for 'set_to', must be one of 'all', 'new' or 'none'".format(set_to))
     old_lock = instance.attr_mod_ctrl
     instance.attr_mod_ctrl = set_to
     yield

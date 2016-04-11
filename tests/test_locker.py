@@ -116,3 +116,5 @@ def test_open(locked_instance):
 def test_return_nontrivial_getattr(locked_instance):
     a = locked_instance(Locker)
     assert a.y == 2
+    with change_lock(a, 'none'):
+        a.z = 3

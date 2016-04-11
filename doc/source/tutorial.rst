@@ -72,3 +72,24 @@ Finally, the :class:`SuperConstLocker` metaclass does not allow changing, deleti
     a.y = 3 # raises AttributeError
 
     a.attr_mod_ctrl = 'none' # raises AttributeError
+
+For temporarily changing the lock type (via ``attr_mod_ctrl``), the :meth:`change_lock() <fsc.locker.change_lock>` Context Manager can be used:
+
+.. code:: python
+
+    from fsc.locker import ConstLocker, change_lock
+
+    class Test(metaclass=ConstLocker):
+        def __init__(self, x):
+            self.x = x
+
+    a = Test(1)
+
+    with change_lock(a, 'none'):
+        a.x = 3 # ok
+        del a.x # ok
+        a.y = 3 # ok
+
+    a.x = 3 # raises AttributeError
+    del a.x # raises AttributeError
+    a.y = 3 # raises AttributeError
