@@ -6,8 +6,9 @@
 # File:    _locker.py
 
 import decorator
+from contextlib import contextmanager
 
-__all__ = ['SuperConstLocker', 'ConstLocker', 'OpenLocker', 'Locker']
+__all__ = ['SuperConstLocker', 'ConstLocker', 'OpenLocker', 'Locker', 'change_lock']
 
 class LockerBase(type):
     def __init__(cls, name, bases, attrs):
@@ -123,3 +124,10 @@ try:
     Locker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'new'``."""
 except AttributeError:
     pass
+
+@contextmanager
+def change_lock(instance, set_to='none'):
+    old_lock = instance.attr_mod_ctrl
+    instance.attr_mod_ctrl = set_to
+    yield
+    instance.attr_mod_ctrl = old_lock

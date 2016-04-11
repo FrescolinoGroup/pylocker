@@ -8,7 +8,7 @@
 import six
 import pytest
 
-from fsc.locker import SuperConstLocker, ConstLocker, Locker, OpenLocker
+from fsc.locker import SuperConstLocker, ConstLocker, Locker, OpenLocker, change_lock
 
 def basic_instance(locker_type):
     @six.add_metaclass(locker_type)
@@ -53,6 +53,9 @@ def test_superconst(locked_instance):
         a.y = 2
     with pytest.raises(AttributeError):
         a.attr_mod_ctrl = 'none'
+    with pytest.raises(AttributeError):
+        with change_lock(a):
+            a.y = 3
 
 @pytest.mark.parametrize('locked_instance', locked_instances)
 def test_const(locked_instance):
@@ -65,6 +68,10 @@ def test_const(locked_instance):
         a.y = 2
     with pytest.raises(ValueError):
         a.attr_mod_ctrl = 'invalid'
+    with change_lock(a):
+        a.x = 3
+    with pytest.raises(AttributeError):
+        a.x = 2
     a.attr_mod_ctrl = 'none'
     a.x = 2
     del a.x
@@ -82,6 +89,10 @@ def test_regular(locked_instance):
         a.y = 2
     with pytest.raises(ValueError):
         a.attr_mod_ctrl = 'invalid'
+    with change_lock(a):
+        a.y = 3
+    with pytest.raises(AttributeError):
+        a.z = 2
     a.attr_mod_ctrl = 'none'
     a.x = 2
     del a.x
@@ -97,6 +108,9 @@ def test_open(locked_instance):
     a.y = 2
     with pytest.raises(ValueError):
         a.attr_mod_ctrl = 'invalid'
+    with change_lock(a, 'all'):
+        with pytest.raises(AttributeError):
+            a.y = 3
 
 @pytest.mark.parametrize('locked_instance', [instance_nontrivial_getattr])
 def test_return_nontrivial_getattr(locked_instance):
