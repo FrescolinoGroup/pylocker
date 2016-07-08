@@ -10,9 +10,14 @@ from contextlib import contextmanager
 
 __all__ = ['SuperConstLocker', 'ConstLocker', 'OpenLocker', 'Locker', 'change_lock']
 
-class LockerBase(type):
-    def __init__(cls, name, bases, attrs):
+#~ class LockerBase(type):
+    #~ def __init__(cls, name, bases, attrs):
 
+def locker_base(locker_type):
+    def locker_cls_decorator(cls):
+        """
+        Base decorator.
+        """
         @decorator.decorator
         def decorate_init(fct, self, *args, **kwargs):
             """
@@ -24,7 +29,7 @@ class LockerBase(type):
             def inner(self, *args, **kwargs):
                 fct(self, *args, **kwargs)
                 if self.__class__.__mro__[0] == cls:
-                    self.attr_mod_ctrl = cls.locker_type
+                    self.attr_mod_ctrl = locker_type
             return inner
 
         # getattr
@@ -93,7 +98,7 @@ class LockerBase(type):
         except AttributeError:
             cls.__init__ = _decorate_init_impl(cls.__init__)
 
-        if not any([isinstance(b, LockerBase) for b in bases]):
+        if not any([isinstance(b, LockerBase) for b in cls.__mro__[1:]]):
             try:
                 cls.__getattr__ = decorate_get(cls.__getattr__.im_func)
             except AttributeError:
@@ -111,19 +116,24 @@ class LockerBase(type):
                 cls.__delattr__ = decorate_del(cls.__delattr__.im_func)
             except AttributeError:
                 cls.__delattr__ = _decorate_del_impl(cls.__delattr__)
+        return cls
+    return locker_cls_decorator
 
-SuperConstLocker = type('SuperConstLocker', (LockerBase,), dict(locker_type='const'))
-ConstLocker = type('ConstLocker', (LockerBase,), dict(locker_type='all'))
-OpenLocker = type('OpenLocker', (LockerBase,), dict(locker_type='none'))
-Locker = type('Locker', (LockerBase,), dict(locker_type='new'))
+SuperConstLocker = locker_base('const')
+ConstLocker = locker_base('all')
+OpenLocker = locker_base('none')
+Locker = locker_base('new')
+#~ ConstLocker = type('ConstLocker', (LockerBase,), dict(locker_type='all'))
+#~ OpenLocker = type('OpenLocker', (LockerBase,), dict(locker_type='none'))
+#~ Locker = type('Locker', (LockerBase,), dict(locker_type='new'))
 
-try:
-    SuperConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'const'``."""
-    ConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'all'``."""
-    OpenLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'none'``."""
-    Locker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'new'``."""
-except AttributeError:
-    pass
+#~ try:
+    #~ SuperConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'const'``."""
+    #~ ConstLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'all'``."""
+    #~ OpenLocker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'none'``."""
+    #~ Locker.__doc__ = """Locker metaclass setting ``attr_mod_ctrl`` to ``'new'``."""
+#~ except AttributeError:
+    #~ pass
 
 @contextmanager
 def change_lock(instance, set_to='none'):

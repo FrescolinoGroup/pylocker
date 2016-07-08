@@ -11,14 +11,14 @@ import pytest
 from fsc.locker import SuperConstLocker, ConstLocker, Locker, OpenLocker, change_lock
 
 def basic_instance(locker_type):
-    @six.add_metaclass(locker_type)
+    @locker_type
     class Test(object):
         def __init__(self, x):
             self.x = x
     return Test(1)
 
 def instance_with_getattr(locker_type):
-    @six.add_metaclass(locker_type)
+    @locker_type
     class Test(object):
         def __init__(self, x):
             self.x = x
@@ -29,7 +29,7 @@ def instance_with_getattr(locker_type):
     return Test(1)
 
 def instance_nontrivial_getattr(locker_type):
-    @six.add_metaclass(locker_type)
+    @locker_type
     class Test(object):
         def __init__(self, x):
             self.x = x
