@@ -33,7 +33,7 @@ setup(
     author='C. Frescolino',
     author_email='frescolino@lists.phys.ethz.ch',
     description=description,
-    install_requires=['decorator'],
+    install_requires=['six', 'decorator'],
     long_description=readme,
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
