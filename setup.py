@@ -23,9 +23,8 @@ except IOError:
 with open('version.txt', 'r') as f:
     version = f.read().strip()
     
-requirements = ['six', 'decorator']
 if sys.version_info < (3,):
-    requirements.append('fsc')
+    raise ValueError('must use Python 3 or higher')
 
 setup(
     name=pkgname_qualified,
@@ -38,11 +37,10 @@ setup(
     author='C. Frescolino',
     author_email='frescolino@lists.phys.ethz.ch',
     description=description,
-    install_requires=requirements,
+    install_requires=['six', 'decorator'],
     long_description=readme,
     classifiers=[
         'License :: OSI Approved :: Apache Software License',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Topic :: Utilities'
     ],
